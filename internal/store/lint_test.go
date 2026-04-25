@@ -1,6 +1,7 @@
 package store
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -76,28 +77,17 @@ func TestLintNonExistentTargetReturnsEmpty(t *testing.T) {
 	}
 }
 
+// containsIssue reports whether results contains an entry for key whose Issue
+// field contains substr. If substr is empty, any entry matching key returns true.
 func containsIssue(results []LintResult, key, substr string) bool {
 	for _, r := range results {
 		if r.Key == key {
 			if substr == "" {
 				return true
 			}
-			if len(r.Issue) > 0 && containsString(r.Issue, substr) {
+			if strings.Contains(r.Issue, substr) {
 				return true
 			}
-		}
-	}
-	return false
-}
-
-func containsString(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > 0 && stringContains(s, substr))
-}
-
-func stringContains(s, sub string) bool {
-	for i := 0; i <= len(s)-len(sub); i++ {
-		if s[i:i+len(sub)] == sub {
-			return true
 		}
 	}
 	return false
